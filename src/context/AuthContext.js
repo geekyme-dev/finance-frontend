@@ -109,33 +109,26 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (username, password) => {
-    try {
-      const response = await axios.post('/api/v1/auth/login', { username, password });
-      localStorage.setItem('token', response.data.token);
-      setUser(response.data.user);
-      navigate('/');
-      window.location.reload(); 
-    } catch (error) {
-      console.error('Error during login:', error);
-      // Optionally, handle error (e.g., show an error message)
-    }
-  };
+  try {
+    const response = await axios.post(AUTH_API.LOGIN, { username, password });
+    console.log('Login response:', response);
+    return response.data; // Optional: return data to use elsewhere
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error; // Optional: rethrow for further handling
+  }
+};
 
   const signup = async (username, password) => {
-    try {
-      const response = await axios.post('/api/v1/auth/signup', { username, password });
-      console.log('Signup response:', response);
-      navigate('/login');
-      // login(username, password);
-    } catch (error) {
-      console.error('Error during signup:', error);
-      // Optionally, handle error (e.g., show an error message)
-      if (error.response && error.response.status === 409) {
-        // Handle duplicate key error (e.g., email already exists)
-        console.error('User already exists.');
-      }
-    }
-  };
+  try {
+    const response = await axios.post(AUTH_API.SIGNUP, { username, password });
+    console.log('Signup response:', response);
+    return response.data; // optional: return data if needed
+  } catch (error) {
+    console.error('Signup error:', error);
+    throw error; // optional: rethrow or handle it differently
+  }
+};
   const signOut = () => {
     localStorage.removeItem('token');
     setUser(null);
